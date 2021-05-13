@@ -7,7 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
 COPY ["AuthServer.Host.csproj", "."]
-RUN dotnet restore "AuthServer.Host/AuthServer.Host.csproj"
+RUN dotnet restore "AuthServer.Host.csproj"
 COPY . .
 WORKDIR "/src/AuthServer.Host"
 RUN dotnet build "AuthServer.Host.csproj" -c Release -o /app/build
