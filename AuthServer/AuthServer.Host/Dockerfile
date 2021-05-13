@@ -9,7 +9,7 @@ WORKDIR /src
 COPY ["AuthServer.Host.csproj", "."]
 RUN dotnet restore "AuthServer.Host.csproj"
 COPY . .
-WORKDIR "/src/AuthServer.Host"
+WORKDIR "/src"
 RUN dotnet build "AuthServer.Host.csproj" -c Release -o /app/build
 
 FROM build AS publish
