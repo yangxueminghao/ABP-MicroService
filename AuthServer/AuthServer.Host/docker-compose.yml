@@ -16,7 +16,7 @@ services:
         condition: on-failure
 
   sqldb:
-    image: mcr.microsoft.com/mssql/server:2017-latest  
+    image: dbafromthecold/sqlserver2012express
     networks:
       - backend
     deploy:
