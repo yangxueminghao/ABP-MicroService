@@ -16,7 +16,7 @@ services:
         condition: on-failure
 
   sqldb:
-    image: dbafromthecold/sqlserver2012express
+    image: dbafromthecold/sqlserver2012express:rtm
     networks:
       - backend
     deploy:
