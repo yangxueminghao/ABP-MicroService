@@ -1,12 +1,12 @@
 version: "3"
 services:
 
-  redis:
+  redisdb:
     image: redis:alpine
     ports:
       - "6379"
     networks:
-      - frontend
+      - backend
     deploy:
       replicas: 2
       update_config:
@@ -15,24 +15,21 @@ services:
       restart_policy:
         condition: on-failure
 
-  db:
-    image: postgres:9.4
-    volumes:
-      - db-data:/var/lib/postgresql/data
+  sqldb:
+    image: sqlservermigrations/mssqlserver:2019-CTP2.1centos    
     networks:
       - backend
     deploy:
       placement:
         constraints: [node.role == manager]
 
-  vote:
-    image: dockersamples/examplevotingapp_vote:before
+  esdb:
+    image: elasticsearch:7.12.1
     ports:
-      - 5000:80
+      - 9200
+      - 9300
     networks:
-      - frontend
-    depends_on:
-      - redis
+      - backend    
     deploy:
       replicas: 2
       update_config:
@@ -40,14 +37,15 @@ services:
       restart_policy:
         condition: on-failure
 
-  result:
-    image: dockersamples/examplevotingapp_result:before
+  authserver:
+    image: zcfx/abp-mic-authserver:v3
     ports:
       - 5001:80
     networks:
       - backend
     depends_on:
-      - db
+      - redisdb
+      - sqldb
     deploy:
       replicas: 1
       update_config:
@@ -56,37 +54,9 @@ services:
       restart_policy:
         condition: on-failure
 
-  worker:
-    image: dockersamples/examplevotingapp_worker
-    networks:
-      - frontend
-      - backend
-    deploy:
-      mode: replicated
-      replicas: 1
-      labels: [APP=VOTING]
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-      placement:
-        constraints: [node.role == manager]
+  
 
-  visualizer:
-    image: dockersamples/visualizer:stable
-    ports:
-      - "8080:8080"
-    stop_grace_period: 1m30s
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-
-networks:
-  frontend:
+networks:  
   backend:
 
-volumes:
-  db-data:
+
