@@ -16,7 +16,7 @@ services:
         condition: on-failure
 
   sqldb:
-    image: sqlservermigrations/mssqlserver:2019-CTP2.1centos    
+    image: mcr.microsoft.com/mssql/server:2017-latest  
     networks:
       - backend
     deploy:
